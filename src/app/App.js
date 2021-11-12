@@ -10,18 +10,18 @@ const App = () => {
 			<Header />
 			<main>
                 <Carousel name="homepage carousel" slides={[
-                    <>
+                    <figure>
                         <img src="" alt="" />
                         <p></p>
-                    </>,
-                    <>
+                    </figure>,
+                    <figure>
                         <img src="" alt="" />
                         <p></p>
-                    </>,
-                    <>
+                    </figure>,
+                    <figure>
                         <img src="" alt="" />
                         <p></p>
-                    </>,
+                    </figure>,
                 ]} />
             </main>
 			<footer></footer>

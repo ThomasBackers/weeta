@@ -9,12 +9,8 @@
             position: absolute;
             display: flex;
             height: 100%;
-            // JS has to calculate it
-            width: 300%;
             &__slide {
                 height: 100%;
-                // JS has to calculate it
-                width: 33.34%;
             }
         }
     }
@@ -34,8 +30,13 @@
             border-radius: 50%;
             background-color: $clear-clr;
             margin: 0 .4rem;
-            &:nth-child(1) {
+            cursor: pointer;
+            &--active {
+                width: 1rem;
+                height: 1rem;
+                border-radius: 50%;
                 background-color: $weeta-clr;
+                margin: 0 .4rem;
             }
         }
     }
