@@ -4,8 +4,26 @@ import { v4 as uuidv4 } from 'uuid'
 const Carousel = ({ name, slides }) => {
     const slidesContainer = useRef()
 
-    const ulWidth = 100 * slides.length + "%"
-    const liWidth = 100 / slides.length + "%"
+    const ulWidth = 100 * slides.length
+    const liWidth = 100 / slides.length
+
+    let keyframesCount = 0
+    const carouselKeyframesGenerator = (startIndex, endIndex) => {
+        const keyframeName = `carouselSlide${keyframesCount}`
+        const carouselKeyframes = document.querySelector("#carousel-keyframes")
+        carouselKeyframes.innerHTML = `
+            @keyframes ${keyframeName} {
+                0% {
+                    transform: translateX(${-(startIndex * liWidth) + "%"})
+                }
+                100% {
+                    transform: translateX(${-(endIndex * liWidth) + "%"})
+                }
+            }
+        `
+        keyframesCount += 1
+        return keyframeName
+    }
 
     const carouselButtonEffect = event => {
         if (!event.target.className.includes("--active")) {
@@ -20,6 +38,8 @@ const Carousel = ({ name, slides }) => {
                 }
             }
             event.target.className += "--active"
+            const keyframeName = carouselKeyframesGenerator(previousButtonIndex, clickedButtonIndex)
+            slidesContainer.current.style.animation = `${keyframeName} 0.3s ease-out forwards`
         }
     }
 
@@ -33,14 +53,14 @@ const Carousel = ({ name, slides }) => {
                 <ul 
                     className="carousel__screen__slides"
                     ref={slidesContainer}
-                    style={{ width: `${ulWidth}` }}
+                    style={{ width: `${ulWidth}%` }}
                 >
                     {slides.map(slide => {
                         return (
                             <li 
                                 key={uuidv4()}
                                 className="carousel__screen__slides__slide"
-                                style={{ width: `${liWidth}` }}
+                                style={{ width: `${liWidth}%` }}
                             >
                                 {slide}
                             </li>
