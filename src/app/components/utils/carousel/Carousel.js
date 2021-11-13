@@ -49,10 +49,7 @@ const Carousel = ({ name, slides }) => {
 
     let touchStartXCoordinate = null
     const touchStartEffect = event => {
-        event.type === "touchstart" ?
-            touchStartXCoordinate = event.touches[0].clientX
-            : touchStartXCoordinate = event.clientX
-        console.log(event.type)
+        touchStartXCoordinate = event.touches[0].clientX
     }
 
     const swipeSlides = (event, xDelta) => {
@@ -87,10 +84,7 @@ const Carousel = ({ name, slides }) => {
     
     const touchMoveEffect = event => {
         if (touchStartXCoordinate) {
-            let currentX
-                event.type === "touchstart" ?
-                currentX = event.touches[0].clientX
-            : currentX = event.clientX
+            const currentX = event.touches[0].clientX
             const xDelta = touchStartXCoordinate - currentX
             swipeSlides(event, xDelta)
             touchStartXCoordinate = null
@@ -112,8 +106,6 @@ const Carousel = ({ name, slides }) => {
                     style={{ width: `${ulWidth}%` }}
                     onTouchStart={touchStartEffect}
                     onTouchMove={touchMoveEffect}
-                    onMouseDown={touchStartEffect}
-                    onMouseMove={touchMoveEffect}
                 >
                     {slides.map(slide => {
                         return (
