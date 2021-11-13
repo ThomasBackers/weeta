@@ -5,6 +5,7 @@ const Carousel = ({ name, slides }) => {
     const ulWidth = 100 * slides.length
     const liWidth = 100 / slides.length
     const slidesContainer = useRef()
+    const buttonsContainer = useRef()
     const styleTag = useRef()
 
     useEffect(() => {
@@ -14,7 +15,7 @@ const Carousel = ({ name, slides }) => {
     let keyframeSwitch = 0
     const carouselKeyframesGenerator = (startIndex, endIndex) => {
         const keyframeName = `carouselSlide${keyframeSwitch}`
-        styleTag.current.innerHTML = `
+        styleTag.current.textContent = `
             @keyframes ${keyframeName} {
                 0% {
                     transform: translateX(${-(startIndex * liWidth) + "%"})
@@ -31,7 +32,7 @@ const Carousel = ({ name, slides }) => {
     const carouselButtonEffect = event => {
         if (!event.target.className.includes("--active")) {
             let clickedButtonIndex, previousButtonIndex
-            const buttons = [...event.target.parentElement.children]
+            const buttons = [...buttonsContainer.current.children]
             for (let button of buttons) {
                 if (button === event.target)
                     clickedButtonIndex = buttons.indexOf(button)
@@ -52,16 +53,42 @@ const Carousel = ({ name, slides }) => {
         touchStartXCoordinate = firstTouch.clientX
     }
 
+    const swipeSlides = (event, xDelta) => {
+        const slides = [...slidesContainer.current.children]
+        let end, step, start
+        if (xDelta > 0) {
+            // to the left
+            end = slides.length - 1
+            step = 1
+            start = 0
+        } else {
+            // to the right
+            end = 0
+            step = -1
+            start = slides.length - 1
+        }
+        let touchedSlideIndex, nextSlideIndex
+        for (let slide of slides) {
+            if (slide === event.target) {
+                touchedSlideIndex = slides.indexOf(slide)
+                if (touchedSlideIndex !== end)
+                    nextSlideIndex = touchedSlideIndex + step
+                else nextSlideIndex = start
+            }
+        }
+        const buttons = buttonsContainer.current.children
+        buttons[touchedSlideIndex].className = "carousel__buttons__button"
+        buttons[nextSlideIndex].className += "--active"
+        const keyframeName = carouselKeyframesGenerator(touchedSlideIndex, nextSlideIndex)
+        slidesContainer.current.style.animation = `${keyframeName} 0.3s ease-out forwards`
+    }
+    
     const touchMoveEffect = event => {
         if (touchStartXCoordinate) {
             const currentX = event.touches[0].clientX
             const xDelta = touchStartXCoordinate - currentX
-            if (xDelta > 0) {
-                // to the left
-            }
-            else {
-                // to the right
-            }
+            swipeSlides(event, xDelta)
+            touchStartXCoordinate = null
         }
     }
 
@@ -95,7 +122,7 @@ const Carousel = ({ name, slides }) => {
                 </ul>
             </div>
             
-            <div className="carousel__buttons">
+            <div className="carousel__buttons" ref={buttonsContainer}>
                 {(() => {
                     const buttonsChildren = []
                     let className = "carousel__buttons__button--active"
