@@ -9,7 +9,7 @@ const App = () => {
         <>
 			<Header />
 			<main>
-                <Carousel name="homepage carousel" slides={[
+                <Carousel name="homepage-carousel" slides={[
                     <figure>
                         <img src="" alt="" />
                         <p></p>

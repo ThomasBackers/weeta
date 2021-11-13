@@ -1,17 +1,20 @@
-import { useRef } from 'react'
+import { useRef, useEffect } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 
 const Carousel = ({ name, slides }) => {
-    const slidesContainer = useRef()
-
     const ulWidth = 100 * slides.length
     const liWidth = 100 / slides.length
+    const slidesContainer = useRef()
+    const styleTag = useRef()
 
-    let keyframesCount = 0
+    useEffect(() => {
+        document.querySelector("head").appendChild(styleTag.current)
+    }, [])
+
+    let keyframeSwitch = 0
     const carouselKeyframesGenerator = (startIndex, endIndex) => {
-        const keyframeName = `carouselSlide${keyframesCount}`
-        const carouselKeyframes = document.querySelector("#carousel-keyframes")
-        carouselKeyframes.innerHTML = `
+        const keyframeName = `carouselSlide${keyframeSwitch}`
+        styleTag.current.innerHTML = `
             @keyframes ${keyframeName} {
                 0% {
                     transform: translateX(${-(startIndex * liWidth) + "%"})
@@ -21,7 +24,7 @@ const Carousel = ({ name, slides }) => {
                 }
             }
         `
-        keyframesCount += 1
+        keyframeSwitch ? keyframeSwitch = 0 : keyframeSwitch = 1
         return keyframeName
     }
 
@@ -43,17 +46,40 @@ const Carousel = ({ name, slides }) => {
         }
     }
 
+    let touchStartXCoordinate = null
+    const touchStartEffect = event => {
+        const firstTouch = event.touches[0]
+        touchStartXCoordinate = firstTouch.clientX
+    }
+
+    const touchMoveEffect = event => {
+        if (touchStartXCoordinate) {
+            const currentX = event.touches[0].clientX
+            const xDelta = touchStartXCoordinate - currentX
+            if (xDelta > 0) {
+                // to the left
+            }
+            else {
+                // to the right
+            }
+        }
+    }
+
     return (
         <section className="carousel">
             <h2 className="carousel__heading hidden">
                 {name}
             </h2>
 
+            <style className={`${name}-keyframes`} ref={styleTag}></style>
+
             <div className="carousel__screen">
                 <ul 
                     className="carousel__screen__slides"
                     ref={slidesContainer}
                     style={{ width: `${ulWidth}%` }}
+                    onTouchStart={touchStartEffect}
+                    onTouchMove={touchMoveEffect}
                 >
                     {slides.map(slide => {
                         return (
