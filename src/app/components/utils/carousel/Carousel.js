@@ -52,6 +52,10 @@ const Carousel = ({ name, slides }) => {
         touchStartXCoordinate = event.touches[0].clientX
     }
 
+    const clickStartEffect = event => {
+        touchStartXCoordinate = event.clientX
+    }
+
     const swipeSlides = (event, xDelta) => {
         const slides = [...slidesContainer.current.children]
         let end, step, start
@@ -91,6 +95,15 @@ const Carousel = ({ name, slides }) => {
         }
     }
 
+    const pointerMoveEffect = event => {
+        if (touchStartXCoordinate) {
+            const currentX = event.clientX
+            const xDelta = touchStartXCoordinate - currentX
+            swipeSlides(event, xDelta)
+            touchStartXCoordinate = null
+        }
+    }
+
     return (
         <section className="carousel">
             <h2 className="carousel__heading hidden">
@@ -106,6 +119,8 @@ const Carousel = ({ name, slides }) => {
                     style={{ width: `${ulWidth}%` }}
                     onTouchStart={touchStartEffect}
                     onTouchMove={touchMoveEffect}
+                    onMouseDown={clickStartEffect}
+                    onMouseMove={pointerMoveEffect}
                 >
                     {slides.map(slide => {
                         return (
