@@ -104,6 +104,10 @@ const Carousel = ({ name, slides }) => {
         }
     }
 
+    const touchEndEffect = () => {
+        touchStartXCoordinate = null
+    }
+
     return (
         <section className="carousel">
             <h2 className="carousel__heading hidden">
@@ -119,8 +123,10 @@ const Carousel = ({ name, slides }) => {
                     style={{ width: `${ulWidth}%` }}
                     onTouchStart={touchStartEffect}
                     onTouchMove={touchMoveEffect}
+                    onTouchEnd={touchEndEffect}
                     onMouseDown={clickStartEffect}
                     onMouseMove={pointerMoveEffect}
+                    onMouseUp={touchEndEffect}
                 >
                     {slides.map(slide => {
                         return (
